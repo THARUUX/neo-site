@@ -7,28 +7,26 @@ import {useContext} from "react";
 import {CartContext} from "@/components/CartContext";
 import Loading from "@/components/Loading";
 import BackButton from "@/components/BackButton";
-import Footer from "@/components/Footer";
 
 export default function ProductPage({product}) {
   const {addProduct} = useContext(CartContext);
-  console.log(product.description);
   return (
     <>
       <BackButton />
       <Header />
-      <div className="w-full min-h-screen flex justify-center">
+      <div className="w-full flex justify-center">
       <Center>
-        <div className="sm:px-10 py-10 single-product-div-1">
-          <div className="sm:flex justify-center gap-5  w-full single-product-div-1-1">
-            <div className="bg-white rounded p-10 w-full sm:max-w-96 sm:w-96 h-auto single-product-div-1-1-1">
+        <div className="p-10 single-product-div-1">
+          <div className="flex justify-center items-center w-full single-product-div-1-1">
+            <div className="bg-white rounded p-10 w-96 h-96 single-product-div-1-1-1">
               <ProductImages images={product.images} />
             </div>
-            <div className="p-10 border-0 shadow-lg rounded-lg sm:w-96 h-auto md:h-fit justify-between flex flex-col single-product-div-1-1-2">
+            <div className="p-10 w-96 h-auto md:h-96 justify-between flex flex-col single-product-div-1-1-2">
               <div className="">
                 <div className="text-2xl mb-5 text-main-dark">{product.title}</div>
-                <p className="text-sm text-main-dark whitespace-pre-line">{product.description} </p>
+                <p className="text-sm text-main-dark">{product.description} </p>
               </div>
-              <div className="flex gap-5 mt-5 items-center justify-between">
+              <div className="flex gap-5 items-center justify-between">
                 <div>
                   <div className="text-xl">Rs.{product.price}</div>
                 </div>
@@ -48,7 +46,6 @@ export default function ProductPage({product}) {
         </div>
       </Center>
       </div>
-      <Footer></Footer>
     </>
   );
 }

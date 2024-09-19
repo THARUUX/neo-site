@@ -34,7 +34,7 @@ export async function getServerSideProps() {
     await mongooseConnect();
     const featuredProductId = '664b1c9789a45de583ce7afa';
     featuredProduct = await Product.findById(featuredProductId);
-    newProducts = await Product.find({}, null, { sort: { '_id': -1 }, limit: 3 });
+    newProducts = await Product.find({}, null, { sort: { '_id': -1 }, limit: 4 });
   } catch (error) {
     console.error("Error fetching data:", error.message);
   } finally {

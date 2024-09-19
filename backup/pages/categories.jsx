@@ -6,9 +6,6 @@ import { Category } from '@/models/Category';
 import { mongooseConnect } from '@/lib/mongoose';
 import Link from 'next/link';
 import Loading from '@/components/Loading';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
-
 
 export default function CategoriesPage({ categories , loading}) {
 
@@ -22,7 +19,7 @@ export default function CategoriesPage({ categories , loading}) {
       <Header />
       <div className='min-h-screen w-full flex justify-center'>
         <Center>
-          <div className='py-16'>
+          <div className='p-10'>
             <div className='text-2xl text-main-dark' data-aos="fade-right">Categories</div>
             <div className='w-full pt-10'>
               Available Categories
@@ -33,19 +30,10 @@ export default function CategoriesPage({ categories , loading}) {
                   category?.parent?.name ? (
                     ''
                   ) : (
-                    <Link key={category._id} href={`/Category/${category._id}`} className='category-container' data-aos='fade'>
-                        {category.image ? (<LazyLoadImage 
-                                                effect="blur"
-                                                wrapperProps={{
-                                                    style: {transitionDelay: "1s"},
-                                                }} 
-                                                src={`${category.image}`} 
-                                                alt="" 
-                                                className='w-64 h-64 object-cover rounded-t-md drop-shadow-xl bg-transparent'/>) : null}
-                        <div className='w-64 px-5 py-3 text-center rounded shadow-md tracking-wider bg-white/40'>
-                            {category.name}
-                        </div>
-                        {category.description?  (<cato className="category-disc absolute top-0 w-full h-full bg-white/70 rounded-md p-7">{category.description}</cato>) : null}
+                    <Link key={category._id} href={`/Category/${category._id}`}>
+                      <div className='min-w-64 px-5 py-3 text-center rounded shadow-md category-container tracking-wider'>
+                        {category.name}
+                      </div>
                     </Link>
                   )
                 ))

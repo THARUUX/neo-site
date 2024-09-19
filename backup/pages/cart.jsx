@@ -131,7 +131,7 @@ export default function CartPage() {
                             </div>
                         </div>
                     ) : (
-                        <div className='py-16 min-h-screen cart-container-main'>
+                        <div className='p-10 min-h-screen cart-container-main'>
                             <div>
                                 <h2 className='text-2xl ml-1 mt-5'>Cart</h2>
                                 {!cartProducts?.length && (

@@ -18,8 +18,8 @@ export default function ProductsPage({products ,  loading}) {
       <Header />
       <div className="w-full min-h-screen flex justify-center">
         <Center>
-            <div className="py-16">
-                <div className="text-2xl tracking-tight mb-10" data-aos="fade-right">All Products</div>
+            <div className="p-10">
+                <div className="text-2xl tracking-tight mb-10 ml-2" data-aos="fade-right">All Products</div>
                 <ProductsGrid products={products} />
             </div>
         </Center>

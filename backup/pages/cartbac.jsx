@@ -1,118 +1,141 @@
-import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import Header from '@/components/Header';
-import Center from '@/components/Center';
-import { CartContext } from '@/components/CartContext';
-import Footer from '@/components/Footer';
-import Loading from '@/components/Loading';
-import BackButton from '@/components/BackButton';
-import Image from 'next/image';
+    import React, { useContext, useState, useEffect } from 'react';
+    import axios from 'axios';
+    import Link from 'next/link';
+    import Header from '@/components/Header';
+    import Center from '@/components/Center';
+    import { CartContext } from '@/components/CartContext';
+    import Footer from '@/components/Footer';
+    import Loading from '@/components/Loading';
+    import BackButton from '@/components/BackButton';
+    import Image from 'next/image';
 
-export default function CartPage() {
-    const router = useRouter();
-    const { cartProducts, addProduct, removeProduct, clearCart } = useContext(CartContext);
-    const [products, setProducts] = useState([]);
-    const [name, setName] = useState('');
-    const [contactNumber, setContactNumber] = useState('');
-    const [city, setCity] = useState('');
-    const [district, setDistrict] = useState('');
-    const [streetAddress, setStreetAddress] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [pickupFromStore, setPickupFromStore] = useState(false);
+    export default function CartPage() {
+        const { cartProducts, addProduct, removeProduct, clearCart } = useContext(CartContext);
+        const [products, setProducts] = useState([]);
+        const [name, setName] = useState('');
+        const [contactNumber, setContactNumber] = useState('');
+        const [city, setCity] = useState('');
+        const [district, setDistrict] = useState('');
+        const [streetAddress, setStreetAddress] = useState('');
+        const [isSuccess, setIsSuccess] = useState(false);
+        const [loading , setLoading] = useState(false);
+        const [pickupFromStore, setPickupFromStore] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            //setLoading(true);
-            try {
-                const response = await axios.post('/api/cart', { ids: cartProducts });
-                setProducts(response.data);
-            } catch (error) {
-                console.error("Error fetching data:", error.message);
-            } finally {
-                //setLoading(false);
-            }
-        };
-        fetchData();
-    }, [cartProducts]);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined' && window.location.href.includes('success')) {
-            setIsSuccess(true);
-            clearTheCart();
+        if (loading){
+            return(
+                <Loading />
+            );
         }
-    }, []); 
 
-    function lessOfThisProduct(id) {
+        useEffect(() => {
+            const fetchData = async () => {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/api/cart', { ids: cartProducts });
+                    setProducts(response.data);
+                } catch (error) {
+                    console.error("Error fetching data:", error.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        }, [cartProducts]);
+    
+        useEffect(() => {
+            if (typeof window !== 'undefined' && window.location.href.includes('success')) {
+                setIsSuccess(true);
+                clearTheCart();
+            }
+        }, []); 
+
+        function lessOfThisProduct(id) {
         removeProduct(id);
-    }
-
-    function moreOfThisProduct(id) {
-        addProduct(id);
-    }
-
-    async function placeOrder() {
-        if (pickupFromStore) {
-            if (!name || !contactNumber) {
-                alert('Please fill in the order information');
-                return;
-            }
-        } else {
-            if (!name || !contactNumber || !city || !district || !streetAddress) {
-                alert('Please fill in the order information');
-                return;
+        }
+        
+        async function placeOrder() {
+            if (pickupFromStore == true){
+                if (!name || !contactNumber){
+                    alert('Please fill the order informations');
+                } else {
+                    try {
+                        setLoading(true)
+                        const response = await axios.post('/api/checkout', {
+                        name,contactNumber,city,district,streetAddress,pickupFromStore,deliveryFee,total,Final,weightTotal,
+                        cartProducts,
+                        });
+                        if (response.data.url) {
+                        window.location = response.data.url;
+                        }
+                    } catch (error) {
+                        console.error("Error fetching data:", error.message);
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+            }else{
+                if (!name || !contactNumber || !city || !district || !streetAddress){
+                    alert('Please fill the order informations');
+                } else {
+                    try {
+                        setLoading(true)
+                        const response = await axios.post('/api/checkout', {
+                        name,contactNumber,city,district,streetAddress,pickupFromStore,deliveryFee,total,Final,weightTotal,
+                        cartProducts,
+                        });
+                        if (response.data.url) {
+                            router.push(response.data.url);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching data:", error.message);
+                    } finally {
+                        setLoading(false);
+                    }
+                }
             }
         }
-
-        try {
-            setLoading(true);
-            const response = await axios.post('/api/checkout', {
-                name, contactNumber, city, district, streetAddress, pickupFromStore,
-                cartProducts,
-            });
-            if (response.data.url) {
-                router.push(response.data.url); // Use Next.js router for navigation
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error.message);
-            alert('Error placing order. Please try again later.');
-        } finally {
-            setLoading(false);
+        let total = 0;
+        for (const productId of cartProducts) {
+        const price = products.find(p => p._id === productId)?.price || 0;
+        total += price;
         }
-    }
 
-    let total = products.reduce((acc, product) => {
-        const price = product.price || 0;
-        return acc + price * cartProducts.filter(id => id === product._id).length;
-    }, 0);
+        let weightTotal = 0;
+        let weightTotalGrams = 0;
+        for (const productId of cartProducts) {
+            const weight = products.find(w => w._id === productId)?.weight || 0;
+            weightTotalGrams += weight;
+            weightTotal = weightTotalGrams/1000;
+        }
 
-    let weightTotal = products.reduce((acc, product) => {
-        const weight = product.weight || 0;
-        return acc + weight;
-    }, 0) / 1000;
+        let weightForDeliver = Math.floor(weightTotal);
+        let additionalFeeForWeight = 0;
+        if (weightForDeliver > 0) {
+            additionalFeeForWeight = (weightForDeliver) * 80;
+        }
 
-    let deliveryFee = 400 + Math.floor(weightTotal) * 80;
-    let Final = pickupFromStore ? total : deliveryFee + total;
 
-    function clearTheCart() {
-        localStorage.removeItem('cart');
-    }    
+        let deliveryFee = 400;
+        deliveryFee = 400 + additionalFeeForWeight;
 
-    useEffect(() => {
+        let Final = 0;
+        if (pickupFromStore == true){
+            Final = total;
+        } else{
+            Final = deliveryFee + total
+        }
+
+        function clearTheCart() {
+            localStorage.removeItem('cart');
+        }    
+    
         if (isSuccess) {
             router.push('/thank');
-             // Use Next.js router for navigation
         }
-    }, [isSuccess, router]);
-
-    if (loading) {
-        return <Loading />;
-    }
-
-    return (
-        <div className='w-full flex flex-col items-center'>
+        
+    
+        return (
+            <div className='w-full flex flex-col items-center'>
                 <Header />
                 <Center>
                     {isSuccess ? (
@@ -131,7 +154,7 @@ export default function CartPage() {
                             </div>
                         </div>
                     ) : (
-                        <div className='py-16 min-h-screen cart-container-main'>
+                        <div className='p-10 min-h-screen cart-container-main'>
                             <div>
                                 <h2 className='text-2xl ml-1 mt-5'>Cart</h2>
                                 {!cartProducts?.length && (
@@ -154,7 +177,7 @@ export default function CartPage() {
                                                 <tr key={product._id} className='h-40 border-b-2 border-gray-300 cart-item-row'>
                                                     <td className='flex h-40 items-center gap-5 text-xl p-5 cart-item-row-column-one'>
                                                         <div className='h-full'>
-                                                            <img src={product.images[0]} alt="" className='cart-images h-32  rounded shadow-md' />
+                                                            <Image src={product.images[0]} alt="" width={auto} height={auto} className='cart-images h-32  rounded shadow-md' />
                                                         </div>
                                                         {product.title}
                                                     </td>
@@ -263,5 +286,5 @@ export default function CartPage() {
                 <Footer />
                 <BackButton/>
             </div>
-    );
-}
+        );
+    }

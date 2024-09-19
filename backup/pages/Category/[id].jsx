@@ -11,8 +11,6 @@ import Link from 'next/link';
 import Loading from '@/components/Loading';
 import ProductsGrid from '@/components/ProductsGrid';
 import BackButton from '@/components/BackButton';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
 
 export default function CategoryInner({ categories, categoryProducts }) {
     const [parentCategory, setCategoryInfo] = useState(null);
@@ -76,9 +74,9 @@ export default function CategoryInner({ categories, categoryProducts }) {
             <Header />
             <div className='w-full min-h-screen flex justify-center'>
                 <Center>
-                    <div className='pt-10'>
+                    <div className='pt-10 px-10'>
                         <div className=''>
-                            <div className='text-lg text-main-dark flex flex-wrap items-center' data-aos="fade-right">
+                            <div className='text-lg text-main-dark flex items-center' data-aos="fade-right">
                                 <Link href={'/categories'} className='text-main-dark text-2xl'>
                                     Categories
                                 </Link>
@@ -86,7 +84,7 @@ export default function CategoryInner({ categories, categoryProducts }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
                                 {parentCategory.parent?.name ? (
-                                    <div className='flex items-center text-nowrap text-lg'>
+                                    <div className='flex items-center text-main-dark text-lg'>
                                         <Link key={parentCategory._id} href={`/Category/${parentCategory.parent._id}`}>
                                             {parentCategory.parent.name}
                                         </Link>
@@ -95,10 +93,8 @@ export default function CategoryInner({ categories, categoryProducts }) {
                                         </svg>
                                     </div>
                                 ) : null}
-                                <div className='text-nowrap'>
-                                    {parentCategory && parentCategory.name}
-                                </div>
                                 
+                                {parentCategory && parentCategory.name}
                             </div>
                         </div>
 
@@ -111,21 +107,10 @@ export default function CategoryInner({ categories, categoryProducts }) {
                                 category?.parent?.name ? (
                                     category.parent._id === parentCategory._id ? (
                                         <Link key={category._id} href={`/Category/${category._id}`} className='category-container' data-aos='fade'>
-                                            {category.image ? (
-                                                <LazyLoadImage 
-                                                effect="blur"
-                                                wrapperProps={{
-                                                    style: {transitionDelay: "1s"},
-                                                }} 
-                                                src={`${category.image}`} 
-                                                alt="" 
-                                                className='w-64 h-64 object-cover rounded-t-md drop-shadow-xl bg-transparent'
-                                                />
-                                            ) : null}
+                                            {category.image ? (<img src={`${category.image}`} alt="" className='w-64 h-64 object-cover rounded-t-md drop-shadow-xl bg-transparent'/>) : null}
                                             <div className='w-64 px-5 py-3 text-center rounded shadow-md tracking-wider bg-white/40'>
                                                 {category.name}
                                             </div>
-                                            {category.description?  (<cato className="category-disc absolute top-0 w-full h-full bg-white/70 rounded-md p-7">{category.description}</cato>) : null}
                                         </Link>
                                     ) : (
                                         null
