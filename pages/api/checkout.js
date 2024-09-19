@@ -40,7 +40,11 @@ export default async function handler(req,res) {
     streetAddress,district,paid:false,
   });
   
+<<<<<<< HEAD
   const session = '/thank';
+=======
+  const session = '/cart?success=1';
+>>>>>>> 66a92f4 (Add files via upload)
 
   res.json({
     url:session

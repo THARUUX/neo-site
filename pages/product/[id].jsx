@@ -14,14 +14,21 @@ export default function ProductPage({product}) {
     <>
       <BackButton />
       <Header />
+<<<<<<< HEAD
       <div className="w-full flex justify-center">
+=======
+>>>>>>> 66a92f4 (Add files via upload)
       <Center>
         <div className="p-10 single-product-div-1">
           <div className="flex justify-center items-center w-full single-product-div-1-1">
             <div className="bg-white rounded p-10 w-96 h-96 single-product-div-1-1-1">
               <ProductImages images={product.images} />
             </div>
+<<<<<<< HEAD
             <div className="p-10 w-96 h-auto md:h-96 justify-between flex flex-col single-product-div-1-1-2">
+=======
+            <div className="p-10 w-96 h-96 justify-between flex flex-col single-product-div-1-1-2">
+>>>>>>> 66a92f4 (Add files via upload)
               <div className="">
                 <div className="text-2xl mb-5 text-main-dark">{product.title}</div>
                 <p className="text-sm text-main-dark">{product.description} </p>
@@ -45,7 +52,10 @@ export default function ProductPage({product}) {
           </div>
         </div>
       </Center>
+<<<<<<< HEAD
       </div>
+=======
+>>>>>>> 66a92f4 (Add files via upload)
     </>
   );
 }
